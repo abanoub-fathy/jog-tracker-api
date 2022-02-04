@@ -7,9 +7,8 @@ require("./database/mongoose");
 const app = express();
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send({ msg: "hello pop in your app" });
-});
+// app routers
+app.use("/users", require("./routes/user"));
 
 // listen on the app port
 const port = process.env.PORT || 5000;
