@@ -9,6 +9,7 @@ app.use(express.json());
 
 // app routers
 app.use("/users", require("./routes/user"));
+app.use("/jogs", require("./routes/jog"));
 
 // listen on the app port
 const port = process.env.PORT || 5000;
