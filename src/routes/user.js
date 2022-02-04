@@ -92,8 +92,9 @@ router.get("/:id", async (req, res) => {
     if (!user) {
       return res.status(404).send({ error: "User not found!" });
     }
-
-    res.send(user);
+    // populate user jogs
+    await user.populate("jogs");
+    res.send({ user, jogs: user.jogs });
   } catch (e) {
     res.status(500).send({ error: e.message });
   }

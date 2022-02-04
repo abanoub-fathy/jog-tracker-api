@@ -44,6 +44,13 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+// jogs virtual property for each user
+userSchema.virtual("jogs", {
+  ref: "Jog",
+  localField: "_id",
+  foreignField: "owner",
+});
+
 // hash user passwords before saving to the DB
 userSchema.pre("save", async function (next) {
   const user = this;

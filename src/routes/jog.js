@@ -25,6 +25,20 @@ router.get("/", async (req, res) => {
   }
 });
 
+// read jogs of specific user
+router.get("/user/:id", async (req, res) => {
+  if (!isValidObjectId(req.params.id)) {
+    res.status(400).send({ error: "Not valid user id" });
+  }
+  try {
+    // find the jogs
+    const jogs = await Jog.find({ owner: req.params.id });
+    res.send(jogs);
+  } catch (e) {
+    res.status(500).send({ error: e.message });
+  }
+});
+
 // read a jog by its id
 router.get("/:id", async (req, res) => {
   const validId = isValidObjectId(req.params.id);
