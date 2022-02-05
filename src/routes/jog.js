@@ -143,4 +143,38 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// get a report of user jogs for the last week
+router.get("/user/:id/report", async (req, res) => {
+  // check for valid id
+  if (!isValidObjectId(req.params.id)) {
+    return res.status(400).send({ error: "Not valid Id" });
+  }
+
+  try {
+    // fetch user related jogs in the last week
+    let now = new Date();
+    let oneWeekBeforeNow = new Date();
+    oneWeekBeforeNow.setDate(oneWeekBeforeNow.getDate() - 7);
+    let jogs = await Jog.find().gte("date", oneWeekBeforeNow).lte("date", now);
+
+    // create a report
+    let totalTime = 0;
+    let totalDistance = 0;
+
+    jogs.forEach((jog) => {
+      totalTime += jog.time;
+      totalDistance += jog.distance;
+    });
+
+    res.send({
+      from: oneWeekBeforeNow,
+      to: now,
+      distance: totalDistance,
+      averageSpeed: totalTime === 0 ? 0 : totalDistance / totalTime,
+    });
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
 module.exports = router;
