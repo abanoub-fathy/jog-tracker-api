@@ -105,6 +105,21 @@ userSchema.statics.findByCredentials = async function (email, password) {
   return user;
 };
 
+// remove user related jogs before removing the user from th db
+userSchema.pre("remove", async function (next) {
+  const user = this;
+
+  try {
+    // populate user related jogs
+    await user.populate("jogs");
+
+    // loop and remove each jog
+    user.jogs.forEach(async (jog) => await jog.remove());
+  } catch (e) {
+    console.log({ error: e.message });
+  }
+});
+
 // create user model
 const User = mongoose.model("User", userSchema);
 
