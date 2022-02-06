@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const { isValidObjectId } = require("mongoose");
+const authUser = require("../middlewares/authUser");
 
 // create a user router
 const router = new express.Router();
@@ -10,32 +11,6 @@ router.post("/new", async (req, res) => {
   try {
     const user = new User(req.body);
     user.role = "normal";
-    await user.save();
-
-    res.status(201).send(user);
-  } catch (e) {
-    res.status(400).send({ error: e.message });
-  }
-});
-
-// create new admin user
-router.post("/new/admin", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    user.role = "admin";
-    await user.save();
-
-    res.status(201).send(user);
-  } catch (e) {
-    res.status(400).send({ error: e.message });
-  }
-});
-
-// create new user-manager
-router.post("/new/manager", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    user.role = "manager";
     await user.save();
 
     res.status(201).send(user);
@@ -70,8 +45,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// create new admin user
+router.post("/new/admin", authUser, async (req, res) => {
+  try {
+    const user = new User(req.body);
+    user.role = "admin";
+    await user.save();
+
+    res.status(201).send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+// create new user-manager
+router.post("/new/manager", authUser, async (req, res) => {
+  try {
+    const user = new User(req.body);
+    user.role = "manager";
+    await user.save();
+
+    res.status(201).send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
 // read all users in the database
-router.get("/", async (req, res) => {
+router.get("/", authUser, async (req, res) => {
   try {
     const users = await User.find();
     res.send(users);
@@ -81,7 +82,7 @@ router.get("/", async (req, res) => {
 });
 
 // read a user by its id
-router.get("/:id", async (req, res) => {
+router.get("/:id", authUser, async (req, res) => {
   // check if the id is valid
   if (!isValidObjectId(req.params.id)) {
     return res.status(400).send({ error: "Not valid objectId" });
@@ -101,7 +102,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // update user by id
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", authUser, async (req, res) => {
   const validUpdates = ["name", "email", "password"];
   const updates = Object.keys(req.body);
   // check if the updates are valid
@@ -135,7 +136,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 // delete user by id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authUser, async (req, res) => {
   if (!isValidObjectId(req.params.id)) {
     return res.status(400).send({ error: "Not valid id" });
   }
@@ -155,7 +156,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // logout user from all devices
-router.post("/logout/all/:id", async (req, res) => {
+router.post("/logout/all/:id", authUser, async (req, res) => {
   // check for valid id
   if (!isValidObjectId(req.params.id)) {
     return res.status(400).send({ error: "Id not valid" });

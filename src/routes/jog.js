@@ -2,9 +2,10 @@ const Jog = require("../models/jog");
 const express = require("express");
 const router = new express.Router();
 const { isValidObjectId } = require("mongoose");
+const authUser = require("../middlewares/authUser");
 
 // create a jog
-router.post("/", async (req, res) => {
+router.post("/", authUser, async (req, res) => {
   try {
     const jog = new Jog(req.body);
     await jog.save();
@@ -15,7 +16,7 @@ router.post("/", async (req, res) => {
 });
 
 // read all jogs
-router.get("/", async (req, res) => {
+router.get("/", authUser, async (req, res) => {
   try {
     // fetch all jogs
     const jogs = await Jog.find();
@@ -26,7 +27,7 @@ router.get("/", async (req, res) => {
 });
 
 // read jogs of specific user
-router.get("/user/:id", async (req, res) => {
+router.get("/user/:id", authUser, async (req, res) => {
   if (!isValidObjectId(req.params.id)) {
     return res.status(400).send({ error: "Not valid user id" });
   }
@@ -71,7 +72,7 @@ router.get("/user/:id", async (req, res) => {
 });
 
 // read a jog by its id
-router.get("/:id", async (req, res) => {
+router.get("/:id", authUser, async (req, res) => {
   const validId = isValidObjectId(req.params.id);
   if (!validId) {
     return res.status(400).send({ error: "Not valid ID" });
@@ -90,7 +91,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // update a jog by its id
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", authUser, async (req, res) => {
   // check from the validation of the id
   const validId = isValidObjectId(req.params.id);
   if (!validId) {
@@ -124,7 +125,7 @@ router.patch("/:id", async (req, res) => {
 });
 
 // delete a jog by its id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authUser, async (req, res) => {
   const validId = isValidObjectId(req.params.id);
   if (!validId) {
     return res.status(400).send({ error: "Not valid ID" });
@@ -144,7 +145,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // get a report of user jogs for the last week
-router.get("/user/:id/report", async (req, res) => {
+router.get("/user/:id/report", authUser, async (req, res) => {
   // check for valid id
   if (!isValidObjectId(req.params.id)) {
     return res.status(400).send({ error: "Not valid Id" });
