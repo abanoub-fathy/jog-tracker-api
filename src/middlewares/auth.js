@@ -12,10 +12,15 @@ const authUser = async (req, res, next) => {
     if (!decodedToken) throw new Error();
 
     // fetch the user by its id from the token
-    const user = await User.findById(decodedToken._id);
+    const user = await User.findOne({
+      _id: decodedToken._id,
+      "tokens.token": tokenFromReq,
+    });
+    if (!user) throw new Error();
 
     // set the requested user
     req.user = user;
+    req.token = tokenFromReq;
 
     // call next
     next();

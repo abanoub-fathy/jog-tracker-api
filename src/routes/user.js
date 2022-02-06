@@ -155,24 +155,27 @@ router.delete("/:id", authUser, async (req, res) => {
   }
 });
 
-// logout user from all devices
-router.post("/logout/all/:id", authUser, async (req, res) => {
-  // check for valid id
-  if (!isValidObjectId(req.params.id)) {
-    return res.status(400).send({ error: "Id not valid" });
-  }
-
+// logout requested user from all devices
+router.post("/logout/all", authUser, async (req, res) => {
   try {
-    // fetch the user with the provided id
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).send({ error: "User not found" });
-    }
-
     // delete the tokens array
-    user.tokens = [];
-    await user.save();
-    res.send(user);
+    req.user.tokens = [];
+    await req.user.save();
+    res.send(req.user);
+  } catch (e) {
+    res.status(500).send({ error: e.message });
+  }
+});
+
+// logout  user from one device
+router.post("/logout", authUser, async (req, res) => {
+  try {
+    // delete the tokens array
+    req.user.tokens = req.user.tokens.filter(
+      (tokenObj) => tokenObj.token !== req.token
+    );
+    await req.user.save();
+    res.send(req.user);
   } catch (e) {
     res.status(500).send({ error: e.message });
   }
