@@ -2,7 +2,7 @@ const Jog = require("../models/jog");
 const express = require("express");
 const router = new express.Router();
 const { isValidObjectId } = require("mongoose");
-const authUser = require("../middlewares/authUser");
+const { authUser, authRole } = require("../middlewares/auth");
 
 // create a jog
 router.post("/", authUser, async (req, res) => {

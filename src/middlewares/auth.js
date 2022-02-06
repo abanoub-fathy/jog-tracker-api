@@ -24,4 +24,18 @@ const authUser = async (req, res, next) => {
   }
 };
 
-module.exports = authUser;
+const authRole = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .send({ error: "You are not allowed to use this endpoint" });
+    }
+    next();
+  };
+};
+
+module.exports = {
+  authUser,
+  authRole,
+};

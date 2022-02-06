@@ -1,7 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const { isValidObjectId } = require("mongoose");
-const authUser = require("../middlewares/authUser");
+const { authUser, authRole } = require("../middlewares/auth");
 
 // create a user router
 const router = new express.Router();
@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => {
 });
 
 // create new admin user
-router.post("/new/admin", authUser, async (req, res) => {
+router.post("/new/admin", authUser, authRole(["admin"]), async (req, res) => {
   try {
     const user = new User(req.body);
     user.role = "admin";
@@ -59,7 +59,7 @@ router.post("/new/admin", authUser, async (req, res) => {
 });
 
 // create new user-manager
-router.post("/new/manager", authUser, async (req, res) => {
+router.post("/new/manager", authUser, authRole(["admin"]), async (req, res) => {
   try {
     const user = new User(req.body);
     user.role = "manager";
@@ -72,7 +72,7 @@ router.post("/new/manager", authUser, async (req, res) => {
 });
 
 // read all users in the database
-router.get("/", authUser, async (req, res) => {
+router.get("/", authUser, authRole(["admin", "manager"]), async (req, res) => {
   try {
     const users = await User.find();
     res.send(users);
