@@ -1,7 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
-const { isValidObjectId } = require("mongoose");
 const { authUser, authRole } = require("../middlewares/auth");
+const { authAccessUserProfile } = require("../middlewares/user");
 
 // create a user router
 const router = new express.Router();
@@ -71,38 +71,19 @@ router.post("/new/manager", authUser, authRole(["admin"]), async (req, res) => {
   }
 });
 
-// read all users in the database
-router.get("/", authUser, authRole(["admin", "manager"]), async (req, res) => {
-  try {
-    const users = await User.find();
-    res.send(users);
-  } catch (e) {
-    res.status(500).send({ error: e.message });
-  }
-});
-
 // read a user by its id
-router.get("/:id", authUser, async (req, res) => {
-  // check if the id is valid
-  if (!isValidObjectId(req.params.id)) {
-    return res.status(400).send({ error: "Not valid objectId" });
-  }
-
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).send({ error: "User not found!" });
-    }
-    // populate user jogs
-    await user.populate("jogs");
-    res.send({ user, jogs: user.jogs });
-  } catch (e) {
-    res.status(500).send({ error: e.message });
-  }
+router.get("/:id", authUser, authAccessUserProfile, async (req, res) => {
+  await req.requestedUser.populate({
+    path: "jogs",
+    options: {
+      limit: 10,
+    },
+  });
+  res.send({ user: req.requestedUser, jogs: req.requestedUser.jogs });
 });
 
 // update user by id
-router.patch("/:id", authUser, async (req, res) => {
+router.patch("/:id", authUser, authAccessUserProfile, async (req, res) => {
   const validUpdates = ["name", "email", "password"];
   const updates = Object.keys(req.body);
   // check if the updates are valid
@@ -113,43 +94,33 @@ router.patch("/:id", authUser, async (req, res) => {
     return res.status(400).send({ error: "Not valid update operation" });
   }
 
-  // check if the user id is valid
-  if (!isValidObjectId(req.params.id)) {
-    return res.status(400).send({ error: "Not valid id" });
-  }
   try {
-    // fetch the user we need to update
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).send({ error: "User not found" });
-    }
-
     // update the fields we need to update
     updates.forEach((update) => {
-      user[update] = req.body[update];
+      req.requestedUser[update] = req.body[update];
     });
-    await user.save();
-    res.send(user);
+    await req.requestedUser.save();
+    res.send(req.requestedUser);
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
 });
 
 // delete user by id
-router.delete("/:id", authUser, async (req, res) => {
-  if (!isValidObjectId(req.params.id)) {
-    return res.status(400).send({ error: "Not valid id" });
-  }
-
+router.delete("/:id", authUser, authAccessUserProfile, async (req, res) => {
   try {
-    // fetch the user by its id
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).send({ error: "User Not Found" });
-    }
+    await req.requestedUser.remove();
+    res.send(req.requestedUser);
+  } catch (e) {
+    res.status(500).send({ error: e.message });
+  }
+});
 
-    await user.remove();
-    res.send(user);
+// read all users in the database
+router.get("/", authUser, authRole(["admin", "manager"]), async (req, res) => {
+  try {
+    const users = await req.user.getUsersForRequesterRole();
+    res.send(users);
   } catch (e) {
     res.status(500).send({ error: e.message });
   }

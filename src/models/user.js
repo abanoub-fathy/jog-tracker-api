@@ -87,6 +87,15 @@ userSchema.methods.toJSON = function () {
   return userObj;
 };
 
+userSchema.methods.getUsersForRequesterRole = async function () {
+  const user = this;
+  if (user.role === "admin") {
+    return await User.find();
+  } else if (user.role === "manager") {
+    return await User.find().or([{ role: "normal" }, { _id: user._id }]);
+  }
+};
+
 // find user by credentials function
 userSchema.statics.findByCredentials = async function (email, password) {
   // find the user by email first
