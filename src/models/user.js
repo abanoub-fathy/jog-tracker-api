@@ -87,6 +87,7 @@ userSchema.methods.toJSON = function () {
   return userObj;
 };
 
+// fetch list of users for amin or manager
 userSchema.methods.getUsersForRequesterRole = async function () {
   const user = this;
   if (user.role === "admin") {

@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { canAccessUserProfile } = require("../permisions/user");
+const { canAccessUserProfile } = require("../permissions/user");
 const { isValidObjectId } = require("mongoose");
 
 const authAccessUserProfile = async (req, res, next) => {
