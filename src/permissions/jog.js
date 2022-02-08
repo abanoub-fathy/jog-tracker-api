@@ -4,6 +4,7 @@ const canAccessJog = (requesterUser, jogOwnerId) => {
       return true;
     default:
       // if the requester user id matches the jog owner id
+      if (!jogOwnerId) return false;
       return requesterUser._id.toString() === jogOwnerId.toString();
   }
 };
