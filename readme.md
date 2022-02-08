@@ -4,6 +4,15 @@ The API purpose is to track jogging times of users.
 
 ### Quick Start
 
+first time you will run the app it will check for admins in the database if there is no admin the app will create a new one with these credentials (you can change them later)
+
+```
+    {
+        email: "admin@gmail.com",
+        password: "mypass123"
+    }
+```
+
 #### You will need to add the following environment variables
 
 - `PORT` (This is the port which the server will listen to)
@@ -18,7 +27,9 @@ The API purpose is to track jogging times of users.
 2. Go to the project directory `cd jog-tracker-api`
 3. Install packages `npm install`
 4. Set the three environment variables `PORT`, `DATABASE_URL` `TOKEN_SECRET`. one way to do that is to create .env file and set these environment variables inside it.
-5. from the terminal run `npm run dev` or `npm run start`
+5. Open mongodb localy or use mongodb Atlas.
+6. from the terminal run `npm run dev` or `npm run start`
+7. you can use any REST client to run the api requests. one way to use postman and import the postman collection file `jogging tracker.postman_collection.json` from the root directory in the project.
 
 ## Permissions
 
