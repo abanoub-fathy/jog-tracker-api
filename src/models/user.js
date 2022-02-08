@@ -88,13 +88,28 @@ userSchema.methods.toJSON = function () {
 };
 
 // fetch list of users for amin or manager
-userSchema.methods.getUsersForRequesterRole = async function () {
+userSchema.methods.getUsersForRequesterRole = async function (limit, skip) {
   const user = this;
+  let total, users;
   if (user.role === "admin") {
-    return await User.find();
+    total = await User.find().count();
+    users = await User.find()
+      .limit(Number(limit) || 5)
+      .skip(Number(skip) || 0);
   } else if (user.role === "manager") {
-    return await User.find().or([{ role: "normal" }, { _id: user._id }]);
+    total = await User.find()
+      .or([{ role: "normal" }, { _id: user._id }])
+      .count();
+    users = await User.find()
+      .or([{ role: "normal" }, { _id: user._id }])
+      .limit(Number(limit) || 5)
+      .skip(Number(skip) || 0);
   }
+
+  return {
+    total,
+    users,
+  };
 };
 
 // find user by credentials function

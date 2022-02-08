@@ -113,7 +113,10 @@ exports.deleteUser = async (req, res) => {
 // read list of users in the db
 exports.readListOfUsers = async (req, res) => {
   try {
-    const users = await req.user.getUsersForRequesterRole();
+    const users = await req.user.getUsersForRequesterRole(
+      req.query.limit,
+      req.query.skip
+    );
     res.send(users);
   } catch (e) {
     res.status(500).send({ error: e.message });
