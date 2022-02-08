@@ -1,0 +1,454 @@
+{
+	"info": {
+		"_postman_id": "fbba00fe-99a7-4f63-879d-611c14575764",
+		"name": "jogging tracker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if(pm.response.code == 201) {\r",
+							"    pm.environment.set('token', pm.response.json().token)\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"normal Username\",\r\n    \"email\": \"normal@gmail.com\",\r\n    \"password\": \"mypass123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/new",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create new admin user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Mena\",\r\n    \"email\": \"mena@gmail.com\",\r\n    \"password\": \"mypass123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/new/admin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"new",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create new manager user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"teena\",\r\n    \"email\": \"teena@gmail.com\",\r\n    \"password\": \"mypass123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/new/manager",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"new",
+						"manager"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if(pm.response.code == 200) {\r",
+							"    pm.environment.set('token', pm.response.json().token)\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mena@gmail.com\",\r\n    \"password\": \"mypass123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/?limit=2&skip=2",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						""
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "skip",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read a user by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/61fe66b020f33abc0e46e106",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"61fe66b020f33abc0e46e106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user by id",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"abanoub\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users/61fe66b020f33abc0e46e106",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"61fe66b020f33abc0e46e106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user by id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/6202456e5260b3df040b05fd",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"6202456e5260b3df040b05fd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout user from one device",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout from all devices",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/logout/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"logout",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create jog",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"2022-02-08\",\r\n    \"distance\": 800,\r\n    \"time\": 730,\r\n    \"location\": \"This is my jog made by abanoub to abanoub\",\r\n    \"owner\": \"61fe66b020f33abc0e46e106\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/jogs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "find jog by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/jogs/62024cba679bbb8dda2dd37c",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs",
+						"62024cba679bbb8dda2dd37c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update a jog by its id",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"location\": \"updated by pop\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/jogs/62024cba679bbb8dda2dd37c",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs",
+						"62024cba679bbb8dda2dd37c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete a jog by id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/jogs/62024cba679bbb8dda2dd37c",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs",
+						"62024cba679bbb8dda2dd37c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read all jogs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/jogs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get list jogs by user id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/jogs/user/61fe66b020f33abc0e46e106",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs",
+						"user",
+						"61fe66b020f33abc0e46e106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "last week report",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/jogs/user/61fe66b020f33abc0e46e106/report",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"jogs",
+						"user",
+						"61fe66b020f33abc0e46e106",
+						"report"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
